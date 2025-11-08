@@ -6,8 +6,8 @@ import requests
 import logging
 from threading import Thread
 from wrapt_timeout_decorator import timeout
-from homeassistant.const import STATE_ON, STATE_OFF, STATE_ALARM_DISARMED, STATE_ALARM_ARMED_AWAY, \
-    STATE_ALARM_ARMED_NIGHT
+from homeassistant.components.alarm_control_panel import AlarmControlPanelState
+from homeassistant.const import STATE_ON, STATE_OFF
 from custom_components.comelit.binary_sensor import VedoSensor
 from custom_components.comelit.alarm_control_panel import VedoAlarm
 from custom_components.comelit.exception import CookieException
@@ -187,11 +187,11 @@ class ComelitVedo:
             area_id = area["id"]
             name = area["name"]
             if area["armed"] == 4:
-                state = STATE_ALARM_ARMED_AWAY
+                state = AlarmControlPanelState.ARMED_AWAY
             elif area["armed"] == 1:
-                state = STATE_ALARM_ARMED_NIGHT
+                state = AlarmControlPanelState.ARMED_NIGHT
             else:
-                state = STATE_ALARM_DISARMED
+                state = AlarmControlPanelState.DISARMED
 
             if area_id not in self.areas:
                 if hasattr(self, 'alarm_add_entities'):
